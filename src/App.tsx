@@ -3,11 +3,10 @@ import { FormContextProvider } from './context/FormContext';
 
 function App() {
   return (
-    <div>
-      <FormContextProvider>
-        <MultiStepForm />
-      </FormContextProvider>
-    </div>
+    // Wrap 'MultiStepForm' with 'FormContextProvider' to provide context to it
+    <FormContextProvider>
+      <MultiStepForm />
+    </FormContextProvider>
   );
 }
 

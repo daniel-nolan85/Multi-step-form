@@ -1,10 +1,11 @@
 import { useState } from 'react';
 
-interface Step1Props {
-  onStepComplete: () => void;
+// Define the props interface for the PasswordScreen component
+interface Step2Props {
+  onStepComplete: (e: React.SyntheticEvent) => void;
 }
 
-const PasswordScreen = ({ onStepComplete }: Step1Props) => {
+const PasswordScreen = ({ onStepComplete }: Step2Props) => {
   const [password, setPassword] = useState('');
   const [repeatPassword, setRepeatPassword] = useState('');
   const [errors, setErrors] = useState({
@@ -12,6 +13,7 @@ const PasswordScreen = ({ onStepComplete }: Step1Props) => {
     repeatPassword: '',
   });
 
+  // Validate form fields are filled in correctly
   const isPasswordScreenValid = () => {
     return (
       password.trim() !== '' &&
@@ -51,30 +53,42 @@ const PasswordScreen = ({ onStepComplete }: Step1Props) => {
   };
 
   return (
-    <div>
-      <p>Password screen</p>
-      <input
-        type='password'
-        name='password'
-        value={password}
-        onChange={handlePasswordChange}
-        placeholder='Password'
-      />
-      <span className='error'>{errors.password}</span>
-
-      <input
-        type='password'
-        name='repeatPassword'
-        value={repeatPassword}
-        onChange={handleRepeatPasswordChange}
-        placeholder='Repeat Password'
-      />
-      <span className='error'>{errors.repeatPassword}</span>
-
-      <button onClick={onStepComplete} disabled={!isPasswordScreenValid()}>
-        Continue
-      </button>
-    </div>
+    <>
+      <h3>Password screen</h3>
+      <form>
+        <p>Password</p>
+        <div className='input-container'>
+          <input
+            type='password'
+            name='password'
+            value={password}
+            onChange={handlePasswordChange}
+            placeholder='Password'
+          />
+          <span className='error'>{errors.password}</span>
+          {errors.password && <span className='error-icon'>!</span>}
+        </div>
+        <p>Repeat password</p>
+        <div className='input-container'>
+          <input
+            type='password'
+            name='repeatPassword'
+            value={repeatPassword}
+            onChange={handleRepeatPasswordChange}
+            placeholder='Repeat Password'
+          />
+          <span className='error'>{errors.repeatPassword}</span>
+          {errors.repeatPassword && <span className='error-icon'>!</span>}
+        </div>
+        <button
+          type='submit'
+          onClick={(e) => onStepComplete(e)}
+          disabled={!isPasswordScreenValid()}
+        >
+          Continue
+        </button>
+      </form>
+    </>
   );
 };
 

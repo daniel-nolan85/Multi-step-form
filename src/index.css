@@ -1,0 +1,190 @@
+:root {
+  --purple: #837ba3;
+  --light-purple: #e7e5f3;
+  --dark-purple: #645f7c;
+}
+
+*:focus {
+  outline: none;
+}
+
+.form-container {
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+h2 {
+  font-size: 30px;
+  color: var(--dark-purple);
+  margin-bottom: 0;
+  font-weight: bold;
+}
+
+h3 {
+  color: var(--purple);
+  margin-bottom: 50px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--purple);
+  border-radius: 20px;
+  width: 350px;
+}
+
+form div {
+  display: flex;
+  justify-content: space-between;
+}
+
+form p {
+  margin: 30px 0 5px 15px;
+  color: #fff;
+  font-size: 12px;
+}
+
+form .input-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  position: relative;
+}
+
+*::placeholder,
+span.light {
+  color: var(--purple);
+  opacity: 0.5;
+}
+
+form input {
+  margin: 0 15px;
+  padding: 10px;
+  position: relative;
+  color: var(--purple);
+  font-size: 14px;
+}
+
+form button {
+  margin: 40px 15px;
+  padding: 10px;
+  border: none;
+  border-radius: 3px;
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--dark-purple);
+  line-height: 35px;
+  cursor: pointer;
+}
+
+form button:disabled {
+  cursor: not-allowed;
+}
+
+.select-box {
+  display: flex;
+  margin: 0 15px;
+  flex-direction: column;
+  position: relative;
+}
+
+.select-box .caret {
+  position: absolute;
+  right: 15px;
+  top: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--purple);
+  cursor: default;
+  pointer-events: none;
+}
+
+.select-box .options-container {
+  max-height: 0;
+  width: 100%;
+  opacity: 0;
+  transition: all 0.4s;
+  overflow: hidden;
+  order: 1;
+  flex-direction: column;
+}
+
+.select-box .options-container .option:nth-child(odd) {
+  background-color: var(--light-purple);
+}
+.select-box .options-container .option:nth-child(even) {
+  background-color: #fff;
+}
+
+.selected {
+  background: #fff;
+  margin-bottom: 8px;
+  color: var(--purple);
+  position: relative;
+  order: 0;
+}
+
+.select-box .options-container.active {
+  max-height: 240px;
+  opacity: 1;
+  overflow-y: scroll;
+}
+
+.select-box .options-container::-webkit-scrollbar {
+  width: 8px;
+  background: #fff;
+}
+
+.select-box .options-container::-webkit-scrollbar-thumb {
+  background: var(--light-purple);
+  border-radius: 8px;
+  height: 50px;
+}
+
+.select-box .option,
+.selected {
+  padding: 10px 10px;
+  cursor: pointer;
+  flex-direction: column;
+  font-size: 14px;
+}
+
+.select-box label {
+  cursor: pointer;
+}
+
+.select-box .option .radio {
+  display: none;
+}
+
+.error {
+  color: red;
+  margin: 0 15px;
+  padding-top: 5px;
+  font-size: 12px;
+}
+
+.error-icon {
+  position: absolute;
+  right: 25px;
+  top: 10px;
+  line-height: 100%;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  color: #fff;
+  text-align: center;
+}
+
+.field-name {
+  color: var(--light-purple);
+}
+
+.user-data {
+  margin-right: 15px;
+}

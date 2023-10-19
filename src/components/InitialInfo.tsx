@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { fetchCountries, Country } from '../utils/countryAPI';
 import { useFormContext } from '../context/FormContext';
 
+// Define the props interface for the InitialInfo component
 interface Step1Props {
-  onStepComplete: (username: string, phone: string, country: string) => void;
+  onStepComplete: (e: React.SyntheticEvent) => void;
 }
 
 const InitialInfo = ({ onStepComplete }: Step1Props) => {
   const [countries, setCountries] = useState<Country[]>([]);
+  const [countriesVisible, setCountriesVisible] = useState(false);
   const [errors, setErrors] = useState({
     username: '',
     email: '',
@@ -15,6 +17,7 @@ const InitialInfo = ({ onStepComplete }: Step1Props) => {
     country: '',
   });
 
+  // Use React context to access and set form values
   const {
     username,
     email,
@@ -26,6 +29,7 @@ const InitialInfo = ({ onStepComplete }: Step1Props) => {
     setSelectedCountry,
   } = useFormContext();
 
+  // Fetch countries data when component mounts
   useEffect(() => {
     fetchCountries()
       .then((data) => {
@@ -36,12 +40,13 @@ const InitialInfo = ({ onStepComplete }: Step1Props) => {
       });
   }, []);
 
+  // Validate form fields are filled in correctly
   const isInitialInfoValid = () => {
     return (
       username.trim() !== '' &&
       email.trim() !== '' &&
       phone.trim() !== '' &&
-      selectedCountry !== '' &&
+      selectedCountry !== 'Select a country' &&
       errors.username === '' &&
       errors.email === '' &&
       errors.phone === '' &&
@@ -53,6 +58,7 @@ const InitialInfo = ({ onStepComplete }: Step1Props) => {
     const value = e.target.value;
     setUsername(value);
 
+    // Validate username - must be 4-12 characters
     if (value.trim() === '' || value.length < 4 || value.length > 12) {
       setErrors({ ...errors, username: 'Username must be 4-12 characters' });
     } else {
@@ -64,6 +70,7 @@ const InitialInfo = ({ onStepComplete }: Step1Props) => {
     const value = e.target.value;
     setEmail(value);
 
+    // Validate email
     if (!value.match(/^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$/)) {
       setErrors({ ...errors, email: 'Invalid email address' });
     } else {
@@ -75,6 +82,7 @@ const InitialInfo = ({ onStepComplete }: Step1Props) => {
     const value = e.target.value;
     setPhone(value);
 
+    // Validate phone
     if (!value.match(/^[0-9]{10}$/)) {
       setErrors({ ...errors, phone: 'Invalid phone number' });
     } else {
@@ -82,70 +90,90 @@ const InitialInfo = ({ onStepComplete }: Step1Props) => {
     }
   };
 
-  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(e);
+  const handleCountryChange = (label: string) => {
+    setSelectedCountry(label);
+    setCountriesVisible(false);
+  };
 
-    const value = e.target.value;
-    setSelectedCountry(value);
-
-    if (value.trim() === '') {
-      setErrors({ ...errors, country: 'Please select a country' });
-    } else {
-      setErrors({ ...errors, country: '' });
-    }
+  // Toggle visibiliy of countries dropdown
+  const handleDropdown = () => {
+    setCountriesVisible(!countriesVisible);
   };
 
   return (
-    <div>
-      <p>Initial info</p>
-      <input
-        type='text'
-        name='username'
-        value={username}
-        onChange={handleUsernameChange}
-        placeholder='Username'
-      />
-      <span className='error'>{errors.username}</span>
-
-      <input
-        type='email'
-        name='email'
-        value={email}
-        onChange={handleEmailChange}
-        placeholder='Email'
-      />
-      <span className='error'>{errors.email}</span>
-
-      <input
-        type='tel'
-        name='phone'
-        value={phone}
-        onChange={handlePhoneChange}
-        placeholder='Phone Number'
-      />
-      <span className='error'>{errors.phone}</span>
-
-      <select
-        name='country'
-        value={selectedCountry}
-        onChange={handleCountryChange}
-      >
-        <option value=''>Select a country</option>
-        {countries.map((country) => (
-          <option key={country.cca2} value={country.cca2}>
-            {country.name.common}
-          </option>
-        ))}
-      </select>
-      <span className='error'>{errors.country}</span>
-
-      <button
-        onClick={() => onStepComplete(username, phone, selectedCountry)}
-        disabled={!isInitialInfoValid()}
-      >
-        Continue
-      </button>
-    </div>
+    <>
+      <h3>Initial info</h3>
+      <form>
+        <p>Username</p>
+        <div className='input-container'>
+          <input
+            type='text'
+            name='username'
+            value={username}
+            onChange={handleUsernameChange}
+            placeholder='Input username'
+          />
+          <span className='error'>{errors.username}</span>
+          {errors.username && <span className='error-icon'>!</span>}
+        </div>
+        <p>Email</p>
+        <div className='input-container'>
+          <input
+            type='email'
+            name='email'
+            value={email}
+            onChange={handleEmailChange}
+            placeholder='Input email'
+          />
+          <span className='error'>{errors.email}</span>
+          {errors.email && <span className='error-icon'>!</span>}
+        </div>
+        <p>Phone</p>
+        <div className='input-container'>
+          <input
+            type='tel'
+            name='phone'
+            value={phone}
+            onChange={handlePhoneChange}
+            placeholder='Input phone number'
+          />
+          <span className='error'>{errors.phone}</span>
+          {errors.phone && <span className='error-icon'>!</span>}
+        </div>
+        <p>Country</p>
+        <div className='select-box'>
+          <div
+            className={`options-container ${countriesVisible ? 'active' : ''}`}
+          >
+            {countries.map((country) => (
+              <div className='option' key={country.cca2}>
+                <input value={country.cca2} type='radio' className='radio' />
+                <label onClick={() => handleCountryChange(country.name.common)}>
+                  {country.name.common}
+                </label>
+              </div>
+            ))}
+          </div>
+          <div className='selected' onClick={handleDropdown}>
+            <span
+              className={`${
+                selectedCountry == 'Select a country' ? 'light' : ''
+              }`}
+            >
+              {selectedCountry}
+            </span>
+          </div>
+          <span className='caret'>╲╱</span>
+        </div>
+        <button
+          type='submit'
+          onClick={(e) => onStepComplete(e)}
+          disabled={!isInitialInfoValid()}
+        >
+          Continue
+        </button>
+      </form>
+    </>
   );
 };
 
