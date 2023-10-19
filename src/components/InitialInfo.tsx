@@ -1,16 +1,13 @@
 import { useState, useEffect } from 'react';
 import { fetchCountries, Country } from '../utils/countryAPI';
+import { useFormContext } from '../context/FormContext';
 
 interface Step1Props {
-  onStepComplete: () => void;
+  onStepComplete: (username: string, phone: string, country: string) => void;
 }
 
 const InitialInfo = ({ onStepComplete }: Step1Props) => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [countries, setCountries] = useState<Country[]>([]);
-  const [selectedCountry, setSelectedCountry] = useState('');
   const [errors, setErrors] = useState({
     username: '',
     email: '',
@@ -18,11 +15,20 @@ const InitialInfo = ({ onStepComplete }: Step1Props) => {
     country: '',
   });
 
+  const {
+    username,
+    email,
+    phone,
+    selectedCountry,
+    setUsername,
+    setEmail,
+    setPhone,
+    setSelectedCountry,
+  } = useFormContext();
+
   useEffect(() => {
     fetchCountries()
       .then((data) => {
-        console.log(data);
-
         setCountries(data);
       })
       .catch((error) => {
@@ -77,6 +83,8 @@ const InitialInfo = ({ onStepComplete }: Step1Props) => {
   };
 
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    console.log(e);
+
     const value = e.target.value;
     setSelectedCountry(value);
 
@@ -89,7 +97,6 @@ const InitialInfo = ({ onStepComplete }: Step1Props) => {
 
   return (
     <div>
-      <h2>Super test form</h2>
       <p>Initial info</p>
       <input
         type='text'
@@ -132,7 +139,10 @@ const InitialInfo = ({ onStepComplete }: Step1Props) => {
       </select>
       <span className='error'>{errors.country}</span>
 
-      <button onClick={onStepComplete} disabled={!isInitialInfoValid()}>
+      <button
+        onClick={() => onStepComplete(username, phone, selectedCountry)}
+        disabled={!isInitialInfoValid()}
+      >
         Continue
       </button>
     </div>

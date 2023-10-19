@@ -10,12 +10,17 @@ const MultiStepForm = () => {
     setStep(2);
   };
 
+  const handleStep2Complete = () => {
+    setStep(3);
+  };
+
   return (
     <div>
+      <h2>Super test form</h2>
       {step === 1 ? (
         <InitialInfo onStepComplete={handleStep1Complete} />
       ) : step === 2 ? (
-        <PasswordScreen />
+        <PasswordScreen onStepComplete={handleStep2Complete} />
       ) : (
         <ReviewScreen />
       )}
